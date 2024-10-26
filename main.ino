@@ -2,6 +2,9 @@
 #include "FLUX_MANAGER.h"
 #include "POWER_MANAGER.h"
 
+unsigned long previousMillis = 0;
+
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); // inizializza la linea seriale
@@ -21,19 +24,27 @@ void setup() {
 
 void loop() 
 {
-  // put your main code here, to run repeatedly:
+  // Esecuzione di gestionePower e gestioneIlluminazione
+  powerMode = gestionePower(powerMode);
+  gestioneIlluminazione(powerMode);
 
-  //Illuminazione e stato sistema
-  void gestionePower();
-  void gestioneIlluminazione();
+/* debug per start&stop e stato sistema
+  unsigned long currentMillis = millis(); // Ottieni il tempo corrente
 
+  if (currentMillis - previousMillis >= 500) 
+  {
+      previousMillis = currentMillis; // Salva il tempo attuale
 
-  //Impostazione timer relay GIN e TONICA
-  bool getLiquidSelectorStatus();
-  int setRelayTimer();
-  
-  //Check permesso flusso e rilascio pozione
-  bool getFluxEnablerStatus();
-  void secureFlowCheck();
-  void versaPozione();
+      // Stampa i valori di debug
+      Serial.print("S_S_BTN:");
+      Serial.println(digitalRead(START_STOP_BTN_PIN));
+  }
+
+*/
+  // Altri controlli e funzioni
+  getLiquidSelectorStatus();
+  setRelayTimer();
+
+  //secureFlowCheck(powerMode, getFluxEnablerStatus()); //trovare l'errore
+  versaPozione(secureFlow, mappedValueTonica, mappedValueGin);
 }
